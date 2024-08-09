@@ -1,37 +1,51 @@
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import Lista from './src/components/Lista';
-import TareaInput from './src/components/TareaInput';
+import React, { useState, useEffect } from 'react';
+import Body from './src/components/Body.js'; 
+import { StyleSheet, StatusBar } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function App() {
-  const [tareas, setTareas] = useState([
-    {
-      Texto: "Limpiar mi cuarto",
-      Check: false,
-      TiempoCreado: Date.now(),
-      TiempoTerminado: 10
-    },
-    // {
-    //   Texto: "Lavar la ropa",
-    //   Check: true,
-    //   TiempoCreado: Date.now() + 100,
-    //   TiempoTerminado: 10
-    // }
-  ]);
+const App = () => {
+  const [todos, setTodos] = useState([]);
+
+  useEffect(() => {
+    const loadTodos = async () => {
+      try {
+        const todosString = await AsyncStorage.getItem('todos');
+        if (todosString) {
+          setTodos(JSON.parse(todosString));
+        }
+      } catch (error) {
+        console.error("Failed to load todos from AsyncStorage:", error);
+      }
+    };
+
+    loadTodos();
+  }, []);
+
+  useEffect(() => {
+    const saveTodos = async () => {
+      try {
+        await AsyncStorage.setItem('todos', JSON.stringify(todos));
+      } catch (error) {
+        console.error("Failed to save todos to AsyncStorage:", error);
+      }
+    };
+
+    saveTodos();
+  }, [todos]);
 
   return (
-    <View style={styles.container}>
-      <TareaInput tareas={tareas} setTareas={setTareas} />
-      <Lista tareas={tareas} setTareas={setTareas} />
-    </View>
+    <GestureHandlerRootView style={styles.container}>
+      <Body todos={todos} setTodos={setTodos} />
+    </GestureHandlerRootView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white ',
+    backgroundColor: '#fff',
   },
 });
+
+export default App;
