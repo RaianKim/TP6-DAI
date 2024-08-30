@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
 
 const Form = ({ setTodos, todos }) => {
   const [title, setTitle] = useState('');
@@ -39,7 +39,9 @@ const Form = ({ setTodos, todos }) => {
         value={description}
         onChangeText={setDescription}
       />
-      <Button title="Agregar" onPress={agregarTarea} />
+      <TouchableOpacity onPress={agregarTarea} style={styles.buttonAgregar}>
+        <Text style={styles.buttonText}>Agregar</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -54,6 +56,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 8,
+  },
+  buttonAgregar: {
+    backgroundColor: '#5c95ff',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
